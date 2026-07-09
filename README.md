@@ -1,34 +1,33 @@
 # Smart Door Lock — ESP32-CAM
 
-RFID-based smart door access system using ESP32-CAM with real-time photo capture and backend authentication.
+Sistem akses pintar berbasis RFID menggunakan ESP32-CAM dengan pengambilan foto real-time dan autentikasi backend.
 
-## Features
+## Fitur
 
-- RFID card authentication (MFRC522)
-- Real-time photo capture (OV2640)
-- Backend API integration with multipart upload (UID + photo)
-- Auto-lock solenoid after configurable timeout
-- Audio feedback via relay buzzer (tap, grant, deny tones)
-- NTP time synchronization
-- Retry mechanism for cold-start backend (Cloud Run)
+- Autentikasi kartu RFID (MFRC522)
+- Pengambilan foto real-time (OV2640)
+- Integrasi API backend dengan multipart upload (UID + foto)
+- Penguncian solenoid otomatis setelah waktu tunggu yang dapat diatur
+- Umpan balik audio melalui relay buzzer (nada ketuk, izin, tolak)
+- Sinkronisasi waktu NTP
+- Mekanisme percobaan ulang untuk cold-start backend (Cloud Run)
 
-## Hardware
+## Perangkat Keras
 
-| Component       | Pin  | Notes                        |
+| Komponen        | Pin  | Catatan                      |
 |-----------------|------|------------------------------|
-| ESP32-CAM       | —    | AI-Thinker board             |
+| ESP32-CAM       | —    | Board AI-Thinker             |
 | RFID-RC522      | 13   | SDA (SS)                     |
 |                 | 2    | RST                          |
 |                 | 14   | SCK                          |
 |                 | 15   | MISO                         |
 |                 | 12   | MOSI                         |
 | Relay/Solenoid  | 4    | Active LOW                   |
-| Camera          | —    | OV2640 (default AI-Thinker)  |
+| Kamera          | —    | OV2640 (default AI-Thinker)  |
 
+## Memulai
 
-## Getting Started
-
-### 1. Clone & configure
+### 1. Clone & konfigurasi
 
 ```bash
 git clone https://github.com/yourusername/smart-door-cam.git
@@ -38,84 +37,83 @@ cp config.h.example config.h
 
 ### 2. Edit `config.h`
 
-Fill in your WiFi credentials, backend URL, API key, and room name:
+Isi kredensial WiFi, URL backend, kunci API, dan nama ruangan Anda:
 
 ```c
 #define WIFI_SSID       "your_wifi_ssid"
 #define WIFI_PASSWORD   "your_wifi_password"
 #define SERVER_URL      "https://your-backend/api/v1/access"
 #define API_KEY         "your-api-key"
-#define ROOM_NAME       "your-room-name"
 ```
 
-### 3. Upload to ESP32-CAM
+### 3. Upload ke ESP32-CAM
 
-Open `smart_door_cam.ino` in Arduino IDE with ESP32 board support installed.
+Buka `smart_door_cam.ino` di Arduino IDE dengan dukungan board ESP32 terinstal.
 
-**Board Settings:**
+**Pengaturan Board:**
 - Board: `AI Thinker ESP32-CAM`
 - Flash Mode: `QIO`
 - Flash Size: `4MB`
 - Partition Scheme: `Huge APP (3MB No OTA)`
 
-### 4. Open Serial Monitor (115200 baud)
+### 4. Buka Serial Monitor (115200 baud)
 
-Tap an RFID card — the system will:
-1. Read the card UID
-2. Discard 3 stale camera frames
-3. Capture a fresh photo
-4. POST to backend with multipart form-data (uid, room, photo)
-5. Open the solenoid if access is granted (auto-lock after 5s)
+Tempelkan kartu RFID — sistem akan:
+1. Membaca UID kartu
+2. Membuang 3 frame kamera usang
+3. Mengambil foto baru
+4. POST ke backend dengan multipart form-data (uid, room, foto)
+5. Membuka solenoid jika akses diberikan (terkunci otomatis setelah 5 detik)
 
-## Backend API Contract
+## Kontrak API Backend
 
-### Request
+### Permintaan
 
 ```
 POST /api/v1/access
 Content-Type: multipart/form-data
 X-API-KEY: <api_key>
 
-Fields:
-  uid   — RFID card UID (e.g. "A1 B2 C3 D4")
-  room  — Room identifier (e.g. "lab-iot")
-  photo — JPEG image file (optional fallback to JSON)
+Field:
+  uid   — UID kartu RFID (mis. "A1 B2 C3 D4")
+  room  — Identitas ruangan (mis. "lab-iot")
+  photo — Berkas gambar JPEG (opsional, fallback ke JSON)
 ```
 
-### Response (200 OK)
+### Respons (200 OK — diizinkan)
 
 ```json
 {
   "data": {
     "status": "allowed",
-    "message": "Access granted for user John Doe"
+    "message": "Akses diberikan untuk pengguna John Doe"
   }
 }
 ```
 
-### Response (200 OK — denied)
+### Respons (200 OK — ditolak)
 
 ```json
 {
   "data": {
     "status": "denied",
-    "message": "Unknown card"
+    "message": "Kartu tidak dikenal"
   }
 }
 ```
 
-## Project Structure
+## Struktur Proyek
 
 ```
-├── smart_door_cam.ino    # Main firmware
-├── config.h              # ⚠ Local config (gitignored)
-├── config.h.example      # Template for config.h
+├── smart_door_cam.ino    # Firmware utama
+├── config.h              # ⚠ Konfigurasi lokal (gitignored)
+├── config.h.example      # Template untuk config.h
 ├── .gitignore
 └── README.md
 ```
 
-## Notes
+## Catatan
 
-- `config.h` is in `.gitignore` — **never** commit it to avoid leaking credentials
-- The camera discards 3 frames after RFID tap to ensure a fresh capture
-- Backend POST includes 1 retry with 2s delay to handle Cloud Run cold starts
+- `config.h` ada di `.gitignore` — **jangan pernah** di-commit untuk menghindari kebocoran kredensial
+- Kamera membuang 3 frame setelah RFID ditempelkan untuk memastikan foto baru
+- POST backend menyertakan 1 percobaan ulang dengan jeda 2 detik untuk menangani cold-start Cloud Run
