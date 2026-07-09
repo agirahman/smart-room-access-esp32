@@ -25,9 +25,6 @@ RFID-based smart door access system using ESP32-CAM with real-time photo capture
 | Relay/Solenoid  | 4    | Active LOW                   |
 | Camera          | —    | OV2640 (default AI-Thinker)  |
 
-## Wiring Diagram
-
-> _Add your wiring diagram image here_ (see `wiring/` folder)
 
 ## Getting Started
 
