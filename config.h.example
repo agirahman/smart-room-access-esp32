@@ -1,0 +1,39 @@
+/**
+ * config.h - Smart Door Lock Configuration
+ *
+ * Copy this file to config.h and fill in your credentials.
+ *   cp config.h.example config.h
+ *
+ * ⚠ NEVER commit config.h to version control (it's in .gitignore).
+ */
+
+#pragma once
+
+// ─── WiFi ────────────────────────────────────────────────────────────────────
+#define WIFI_SSID       "your_wifi_ssid"
+#define WIFI_PASSWORD   "your_wifi_password"
+
+// ─── Backend API ─────────────────────────────────────────────────────────────
+#define SERVER_URL  "https://your-backend-url/api/v1/access"
+
+// API Key — samakan dengan nilai API_KEY di .env backend
+#define API_KEY     "your-api-key-here"
+
+// ─── Room Info ───────────────────────────────────────────────────────────────
+#define ROOM_NAME       "your-room-name"
+
+// ─── Relay ───────────────────────────────────────────────────────────────────
+#define RELAY_PIN       4
+#define RELAY_ACTIVE    LOW         // LOW = relay ON (active low module)
+#define UNLOCK_DURATION 5000        // Solenoid terbuka 5 detik (ms)
+
+// ─── RFID-RC522 ──────────────────────────────────────────────────────────────
+#define RFID_SS_PIN     13
+#define RFID_RST_PIN    2
+
+// ─── Camera ──────────────────────────────────────────────────────────────────
+#define CAM_QUALITY     12
+#define CAM_FRAMESIZE   FRAMESIZE_VGA
+
+// ─── Timeout ─────────────────────────────────────────────────────────────────
+#define SERVER_TIMEOUT  8000        // Maksimal tunggu response backend (ms)
